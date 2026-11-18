@@ -1,2 +1,3 @@
 User-agent: *
 Allow: /
+Sitemap: https://t-university-landing.pages.dev/sitemap.xml

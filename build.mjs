@@ -33,12 +33,13 @@ const cards = programs.map(({title, level, code, url}) => {
 }).join('\n');
 const levels = [...new Set(programs.map(p => p.level))].map(l => `<label><input type="checkbox" name="level" value="${escape(l)}"> ${escape(label(l))}</label>`).join('\n');
 const pages = ['index.html', ...programs.filter(p => p.url).map(p => p.url)];
+const publicPath = page => page === 'index.html' ? './' : base?.hostname.endsWith('.pages.dev') ? page.replace(/\.html$/, '') : page;
 write('robots.txt', `User-agent: *\nAllow: /\n${base ? `Sitemap: ${new URL('sitemap.xml', base)}\n` : ''}`);
-if (base) write('sitemap.xml', `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${pages.map(p => `<url><loc>${escape(new URL(p === 'index.html' ? './' : p,base).href)}</loc></url>`).join('')}</urlset>\n`);
+if (base) write('sitemap.xml', `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${pages.map(p => `<url><loc>${escape(new URL(publicPath(p),base).href)}</loc></url>`).join('')}</urlset>\n`);
 else rmSync('sitemap.xml', {force:true});
 for (const page of pages) {
   const p = programs.find(p => p.url === page);
-  const vars = {seo: metadata(base, page, p), agenda: agendaHTML, cards, levels, version, home: p ? 'index.html' : '', programTitle: p && escape(p.title), programCode: p && escape(p.code), programLevel: p && escape(label(p.level))};
+  const vars = {seo: metadata(base, page, p, publicPath(page)), agenda: agendaHTML, cards, levels, version, home: p ? 'index.html' : '', programTitle: p && escape(p.title), programCode: p && escape(p.code), programLevel: p && escape(label(p.level))};
   const html = source(`src/${p ? 'course.html' : page}`).replace(/{{(header|footer)}}/g, (_, name) => source(`src/${name}.html`)).replace(/{{(\w+)}}/g, (_, key) => {if (vars[key] == null) throw Error(key); return vars[key];});
   write(page, html);
 }

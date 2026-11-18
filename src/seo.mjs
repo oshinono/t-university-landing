@@ -1,6 +1,6 @@
-export function metadata(base, page, program) {
+export function metadata(base, page, program, publicPath = page === 'index.html' ? './' : page) {
   const brand = 'Т-Университет', home = page === 'index.html';
-  const url = base && new URL(home ? './' : page, base).href;
+  const url = base && new URL(publicPath, base).href;
   const image = base ? new URL('img/social-card.png', base).href : 'img/social-card.png';
   const title = home ? brand : `${program.title} — ${brand}`;
   const description = home ? 'Т-Университет ДГТУ: направления бакалавриата и магистратуры, мероприятия для абитуриентов и контакты в Ростове-на-Дону.' : `${program.title}: программа Т-Университета ДГТУ. Уровень образования, срок обучения, будущая карьера и партнёры программы.`;

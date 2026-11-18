@@ -1,4 +1,4 @@
-import {readFileSync as read, writeFileSync as write, rmSync} from 'node:fs';
+import {readFileSync as read, writeFileSync as write, rmSync, mkdirSync, copyFileSync} from 'node:fs';
 import {createHash} from 'node:crypto';
 import {transformSync} from 'esbuild';
 const source = path => read(path, 'utf8');
@@ -9,6 +9,10 @@ const base = siteUrl ? new URL(siteUrl) : null;
 if (base && (base.protocol !== 'https:' || base.search || base.hash || base.username || base.password)) throw Error('SITE_URL: нужен публичный HTTPS-адрес');
 if (base && !base.pathname.endsWith('/')) base.pathname += '/';
 if (!base && process.env.NODE_ENV === 'production') throw Error('Задайте SITE_URL перед публикацией');
+if (process.env.CF_PAGES === '1') {
+  mkdirSync('dist', {recursive:true});
+  for (const file of ['googleaae6f63fb5c88888.html', 'yandex_af4a04293675067a.html']) copyFileSync(file, `dist/${file}`);
+}
 const agendaHTML = agenda(JSON.parse(source('data/events.json')));
 const hash = createHash('sha256');
 for (const [file, loader] of [['css/style', 'css'], ['js/app', 'js']]) {

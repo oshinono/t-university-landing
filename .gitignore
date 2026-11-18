@@ -1,2 +1,15 @@
+# Node.js
 node_modules/
+coverage/
+*.log
+
+# Локальная конфигурация
+.env
+.env.*
+!.env.example
+
+# ОС и IDE
 .DS_Store
+Thumbs.db
+.idea/
+.vscode/

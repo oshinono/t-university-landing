@@ -1,0 +1,6 @@
+{
+  "name": "t-university",
+  "private": true,
+  "scripts": {"build": "node build.mjs", "test": "node --test test.mjs"},
+  "devDependencies": {"esbuild": "0.28.1"}
+}
